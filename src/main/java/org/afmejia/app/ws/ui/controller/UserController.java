@@ -1,5 +1,7 @@
 package org.afmejia.app.ws.ui.controller;
 
+import javax.validation.Valid;
+
 import org.afmejia.app.ws.ui.model.request.UserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.response.UserRest;
 import org.springframework.http.HttpStatus;
@@ -69,7 +71,7 @@ public class UserController {
             MediaType.APPLICATION_JSON_VALUE
         }
     )
-    public ResponseEntity<UserRest> crateUser(@RequestBody UserDetailsRequestModel userDetails) {
+    public ResponseEntity<UserRest> crateUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
         UserRest returnValue = new UserRest();
         returnValue.setEmail(userDetails.getEmail());
         returnValue.setFirstName(userDetails.getFirstName());
