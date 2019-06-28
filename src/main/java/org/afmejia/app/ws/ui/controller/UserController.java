@@ -1,7 +1,12 @@
 package org.afmejia.app.ws.ui.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
+import org.afmejia.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.request.UserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.response.UserRest;
 import org.springframework.http.HttpStatus;
@@ -40,18 +45,19 @@ public class UserController {
     //     return returnValue;
     // }
 
+    Map<String,  UserRest> users;
+
     @GetMapping(path="/{userId}",
                 produces = {
                     MediaType.APPLICATION_XML_VALUE,
                     MediaType.APPLICATION_JSON_VALUE
                 })
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-        UserRest returnValue = new UserRest();
-        returnValue.setEmail("andres@rise.agency");
-        returnValue.setFirstName("Felipe");
-        returnValue.setLastName("Mejia");
-        
-        return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
+        if (users.containsKey(userId)) {
+            return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @GetMapping
@@ -76,17 +82,39 @@ public class UserController {
         returnValue.setEmail(userDetails.getEmail());
         returnValue.setFirstName(userDetails.getFirstName());
         returnValue.setLastName(userDetails.getLastName());
-        
+
+        String userId = UUID.randomUUID().toString();
+        returnValue.setUsrId(userId);
+
+        if (users == null) users = new HashMap<>();
+        users.put(userId, returnValue);        
         return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
-    @PutMapping
-    public String updateUser() {
-        return "update user was called";
+    @PutMapping(path = "/{userId}",
+        consumes = {
+            MediaType.APPLICATION_XML_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+        },
+        produces = {
+            MediaType.APPLICATION_XML_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+        }
+    )
+    public UserRest updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel userDetails) {
+        UserRest storedUserDetails = users.get(userId);
+        storedUserDetails.setFirstName(userDetails.getFirstName());
+        storedUserDetails.setLastName(userDetails.getLastName());
+
+        users.put(userId, storedUserDetails);
+        
+        return storedUserDetails;
     }
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "delete user was called";
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        users.remove(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
