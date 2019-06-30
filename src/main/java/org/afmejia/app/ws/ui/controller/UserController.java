@@ -10,6 +10,8 @@ import org.afmejia.app.ws.exceptions.UserServiceException;
 import org.afmejia.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.request.UserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.response.UserRest;
+import org.afmejia.app.ws.userservice.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,9 @@ public class UserController {
     // }
 
     Map<String,  UserRest> users;
+    
+    @Autowired
+    UserService userService;
 
     @GetMapping(path="/{userId}",
                 produces = {
@@ -57,7 +62,7 @@ public class UserController {
         /*String firstName = null;
         int firstNameLength = firstName.length();*/
 
-        if (true) throw new UserServiceException("A user service exception is thrown");
+        /*if (true) throw new UserServiceException("A user service exception is thrown");*/
 
         if (users.containsKey(userId)) {
             return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
@@ -83,17 +88,8 @@ public class UserController {
             MediaType.APPLICATION_JSON_VALUE
         }
     )
-    public ResponseEntity<UserRest> crateUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
-        UserRest returnValue = new UserRest();
-        returnValue.setEmail(userDetails.getEmail());
-        returnValue.setFirstName(userDetails.getFirstName());
-        returnValue.setLastName(userDetails.getLastName());
-
-        String userId = UUID.randomUUID().toString();
-        returnValue.setUsrId(userId);
-
-        if (users == null) users = new HashMap<>();
-        users.put(userId, returnValue);        
+    public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
+        UserRest returnValue = userService.createUser(userDetails);   
         return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
