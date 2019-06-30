@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.afmejia.app.ws.exceptions.UserServiceException;
 import org.afmejia.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.request.UserDetailsRequestModel;
 import org.afmejia.app.ws.ui.model.response.UserRest;
@@ -53,8 +54,10 @@ public class UserController {
                     MediaType.APPLICATION_JSON_VALUE
                 })
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-        String firstName = null;
-        int firstNameLength = firstName.length();
+        /*String firstName = null;
+        int firstNameLength = firstName.length();*/
+
+        if (true) throw new UserServiceException("A user service exception is thrown");
 
         if (users.containsKey(userId)) {
             return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
