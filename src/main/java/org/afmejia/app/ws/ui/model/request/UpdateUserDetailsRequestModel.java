@@ -3,12 +3,9 @@ package org.afmejia.app.ws.ui.model.request;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.stereotype.Component;
-
 /**
  * UpdateUserDetailsRequestModel
  */
-@Component
 public class UpdateUserDetailsRequestModel {
     @NotNull(message = "First name cannot be null")
     @Size(min = 2, message = "First name must not be less than 2 characters")

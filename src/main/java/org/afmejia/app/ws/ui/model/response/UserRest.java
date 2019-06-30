@@ -1,8 +1,5 @@
 package org.afmejia.app.ws.ui.model.response;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class UserRest {
     private String firstName;
     private String lastName;
